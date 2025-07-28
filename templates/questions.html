@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Опросник</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #eef; padding: 0; margin: 0; }
+        .container { max-width: 600px; margin: 50px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; }
+        input { width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: 1px solid #ccc; }
+        button { margin-top: 20px; width: 100%; padding: 10px; background: #2196F3; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0b7dda; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Ответь на вопросы</h2>
+        <form method="post">
+            <input type="text" name="flowers" placeholder="Какие цветы тебе нравятся?">
+            <input type="text" name="relationships" placeholder="Сколько у тебя было отношений?">
+            <input type="text" name="hobbies" placeholder="Чем занимаешься в свободное время?">
+            <input type="text" name="dream_job" placeholder="Какая твоя работа мечты?">
+            <input type="text" name="fav_food" placeholder="Любимая еда?">
+            <input type="text" name="music" placeholder="Любимая музыка?">
+            <input type="text" name="travel" placeholder="Куда хочешь поехать?">
+            <input type="text" name="fears" placeholder="Чего боишься больше всего?">
+            <button type="submit">Отправить</button>
+        </form>
+    </div>
+</body>
+</html>

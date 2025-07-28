@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Спасибо!</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0fff0; padding: 0; margin: 0; }
+        .container { max-width: 600px; margin: 50px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #4CAF50; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin-bottom: 10px; }
+        p { font-size: 14px; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Спасибо, {{ name }}!</h2>
+        <p>Вот твои ответы:</p>
+        <ul>
+            {% for k, v in answers.items() %}
+                <li><strong>{{ k }}:</strong> {{ v }}</li>
+            {% endfor %}
+        </ul>
+        <p><strong>IP:</strong> {{ ip }}</p>
+        <p><strong>Город:</strong> {{ geo.city or "не определено" }}</p>
+        <p><strong>Страна:</strong> {{ geo.country_name or "не определено" }}</p>
+        <p><strong>Браузер:</strong> {{ ua }}</p>
+    </div>
+</body>
+</html>
